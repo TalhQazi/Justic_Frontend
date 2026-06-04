@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #040405; /* Matte pitch black */
+  --foreground: #f8fafc;
+  --font-sans: 'Outfit', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  
+  --color-brand-cyan: #00f0ff;
+  --color-brand-purple: #8b5cf6;
+  --color-brand-indigo: #4f46e5;
+  
+  --color-score-positive: #ff3366; /* Harsher sentencing / Aggressive */
+  --color-score-neutral: #a1a1aa;
+  --color-score-negative: #00ff9d; /* Lenient sentencing / Less aggressive */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  /* Premium noise overlay */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-cyan);
+}
+
+/* Advanced Dynamic Mesh Background */
+.bg-mesh-animated {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+  filter: blur(60px);
+  animation: mesh-movement 20s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-movement {
+  0% { transform: scale(1) translateY(0px) translateX(0px); }
+  50% { transform: scale(1.05) translateY(20px) translateX(-20px); }
+  100% { transform: scale(1) translateY(-20px) translateX(20px); }
+}
+
+/* Apple-style Bento Glass Cards */
+.glass-panel {
+  background: rgba(14, 14, 16, 0.4);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 12px 32px -4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(20, 20, 24, 0.45);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Glowing Highlights */
+.border-glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+/* Ring Animations */
+@keyframes ringPulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 0.2; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+
+.animate-ring-pulse {
+  animation: ringPulse 2.5s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Neon Text Glow */
+.text-glow-cyan { text-shadow: 0 0 16px rgba(0, 240, 255, 0.6); }
+.text-glow-indigo { text-shadow: 0 0 16px rgba(79, 70, 229, 0.6); }
+.text-glow-green { text-shadow: 0 0 16px rgba(0, 255, 157, 0.6); }
+.text-glow-red { text-shadow: 0 0 16px rgba(255, 51, 102, 0.6); }
+
+/* Grid Background Pattern */
+.bg-grid-pattern {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+}
+
+/* Utilities for Bento Layout */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.5rem;
+}
