@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Gavel, Shield, BookOpen, ChevronRight, Activity, ArrowUpRight } from 'lucide-react';
 import SearchAutocomplete from '../components/SearchAutocomplete';
 import StateMap from '../components/StateMap';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { api, SearchItem } from '../lib/api';
 
 // Framer Motion Variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -18,7 +18,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 80, damping: 20 } }
 };
