@@ -52,12 +52,13 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 const CustomBarTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
+    const deviation = data.deviation ?? 0;
     return (
       <div className="bg-[#121214]/95 border border-slate-800 p-3 rounded-xl shadow-xl glass-panel">
         <p className="font-display font-bold text-sm text-slate-200">{data.category}</p>
         <p className="font-sans text-xs text-slate-400 mt-0.5">Case Volume: {data.count} cases</p>
         <p className="font-mono font-semibold text-xs text-cyan-400 mt-1.5">
-          Deviation: {data.deviation > 0 ? `+${data.deviation.toFixed(2)}` : data.deviation.toFixed(2)} SD
+          Deviation: {deviation > 0 ? `+${deviation.toFixed(2)}` : deviation.toFixed(2)} SD
         </p>
       </div>
     );
