@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Gavel, Shield, BookOpen, ChevronRight, Activity, ArrowUpRight } from 'lucide-react';
+import { Gavel, Shield, BookOpen, Activity, ArrowUpRight } from 'lucide-react';
 import SearchAutocomplete from '../components/SearchAutocomplete';
 import StateMap from '../components/StateMap';
 import LegislativeNetwork from '../components/LegislativeNetwork';

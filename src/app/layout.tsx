@@ -43,6 +43,12 @@ export default function RootLayout({
               >
                 Dashboard
               </Link>
+              <Link
+                href="/courtlistener"
+                className="text-xs font-bold text-slate-400 hover:text-cyan-400 uppercase tracking-widest transition-colors"
+              >
+                CourtListener
+              </Link>
               <a
                 href="/docs"
                 target="_blank"

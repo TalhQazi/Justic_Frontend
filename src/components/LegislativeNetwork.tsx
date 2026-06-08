@@ -154,18 +154,18 @@ export default function LegislativeNetwork() {
     });
 
     // Drag handlers
-    function dragstarted(event: any, d: any) {
+    function dragstarted(event: d3.D3DragEvent<SVGCircleElement, Node, Node>, d: Node) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
 
-    function dragged(event: any, d: any) {
+    function dragged(event: d3.D3DragEvent<SVGCircleElement, Node, Node>, d: Node) {
       d.fx = event.x;
       d.fy = event.y;
     }
 
-    function dragended(event: any, d: any) {
+    function dragended(event: d3.D3DragEvent<SVGCircleElement, Node, Node>, d: Node) {
       if (!event.active) simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;

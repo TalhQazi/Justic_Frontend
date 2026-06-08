@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, RefreshCw, Download, ArrowLeft, Loader2, Info, Sparkles, Award, FileText } from 'lucide-react';
+import { Shield, RefreshCw, Download, ArrowLeft, Loader2, Sparkles, Award, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { api, ProsecutorProfile as IProsecutorProfile } from '../../../lib/api';
 
@@ -11,26 +11,27 @@ export default function ProsecutorPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [recalculating, setRecalculating] = useState(false);
 
-  async function loadData() {
-    try {
-      const data = await api.getProsecutor(params.id);
-      setProc(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await api.getProsecutor(params.id);
+        if (!cancelled) setProc(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [params.id]);
 
   const handleRecalculate = async () => {
     setRecalculating(true);
     try {
       await api.recalculateProsecutor(params.id);
-      await loadData();
+      const data = await api.getProsecutor(params.id);
+      setProc(data);
     } catch (err) {
       console.error(err);
     } finally {

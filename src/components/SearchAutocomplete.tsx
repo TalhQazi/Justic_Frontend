@@ -26,7 +26,6 @@ export default function SearchAutocomplete() {
 
   useEffect(() => {
     if (query.trim().length < 2) {
-      setResults([]);
       return;
     }
 
@@ -73,7 +72,13 @@ export default function SearchAutocomplete() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setQuery(val);
+            if (val.trim().length < 2) {
+              setResults([]);
+            }
+          }}
           onFocus={() => query.length >= 2 && setIsOpen(true)}
           placeholder="Search judges, prosecutors..."
           className="w-full bg-black/60 text-slate-100 placeholder-slate-500 pl-12 pr-10 py-4 rounded-xl border border-white/10 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all duration-300 font-sans glass-panel group-hover:border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"

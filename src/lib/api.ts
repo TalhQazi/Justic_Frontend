@@ -103,4 +103,46 @@ export const api = {
 
   getLegislator: (id: string) => apiFetch<LegislatorProfile>(`/legislators/${id}`),
   recalculateLegislator: (id: string) => apiFetch<{ status: string; calculated_score: number }>(`/legislators/${id}/recalculate`, { method: 'POST' }),
+
+  searchCourtListener: async (q: string, court?: string, cursor?: string, type?: string): Promise<CourtListenerSearchResponse> => {
+    const params = new URLSearchParams();
+    if (q) params.append('q', q);
+    if (court) params.append('court', court);
+    if (cursor) params.append('cursor', cursor);
+    if (type) params.append('type', type);
+
+    const res = await fetch(`/api/courtlistener?${params.toString()}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  },
 };
+
+export interface CourtListenerResult {
+  absolute_url: string;
+  caseName?: string;
+  caseNameFull?: string;
+  citation?: string[];
+  citeCount?: number;
+  cluster_id?: number;
+  court?: string;
+  court_citation_string?: string;
+  court_id?: string;
+  dateArgued?: string | null;
+  dateFiled?: string;
+  docketNumber?: string;
+  docket_id?: number;
+  id?: number | string;
+  document_type?: 'opinion' | 'docket' | 'audio';
+  snippet?: string;
+}
+
+export interface CourtListenerSearchResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: CourtListenerResult[];
+}
+

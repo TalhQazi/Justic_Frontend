@@ -21,40 +21,54 @@ interface BJIDeviationChartProps {
   categoryData: CategoryBreakdown[];
 }
 
+// Custom Tooltip for Glassmorphic styling
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload: {
+      category?: string;
+      count?: number;
+      deviation?: number;
+    };
+  }>;
+  label?: string | number;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#121214]/95 border border-slate-800 p-3 rounded-xl shadow-xl glass-panel">
+        <p className="font-display font-bold text-xs text-slate-400 uppercase tracking-widest">{label}</p>
+        <p className="font-mono font-semibold text-sm text-cyan-400 mt-1">
+          BJI Index: {payload[0].value > 0 ? `+${payload[0].value.toFixed(2)}` : (payload[0].value !== undefined ? payload[0].value.toFixed(2) : '')}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomBarTooltip = ({ active, payload }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-[#121214]/95 border border-slate-800 p-3 rounded-xl shadow-xl glass-panel">
+        <p className="font-display font-bold text-sm text-slate-200">{data.category}</p>
+        <p className="font-sans text-xs text-slate-400 mt-0.5">Case Volume: {data.count} cases</p>
+        <p className="font-mono font-semibold text-xs text-cyan-400 mt-1.5">
+          Deviation: {data.deviation > 0 ? `+${data.deviation.toFixed(2)}` : data.deviation.toFixed(2)} SD
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function BJIDeviationChart({ historicalData, categoryData }: BJIDeviationChartProps) {
   // Sort historical data by year
   const sortedHistory = [...historicalData].sort((a, b) => a.year - b.year);
 
-  // Custom Tooltip for Glassmorphic styling
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-[#121214]/95 border border-slate-800 p-3 rounded-xl shadow-xl glass-panel">
-          <p className="font-display font-bold text-xs text-slate-400 uppercase tracking-widest">{label}</p>
-          <p className="font-mono font-semibold text-sm text-cyan-400 mt-1">
-            BJI Index: {payload[0].value > 0 ? `+${payload[0].value.toFixed(2)}` : payload[0].value.toFixed(2)}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomBarTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-[#121214]/95 border border-slate-800 p-3 rounded-xl shadow-xl glass-panel">
-          <p className="font-display font-bold text-sm text-slate-200">{data.category}</p>
-          <p className="font-sans text-xs text-slate-400 mt-0.5">Case Volume: {data.count} cases</p>
-          <p className="font-mono font-semibold text-xs text-cyan-400 mt-1.5">
-            Deviation: {data.deviation > 0 ? `+${data.deviation.toFixed(2)}` : data.deviation.toFixed(2)} SD
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

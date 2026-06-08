@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Gavel, RefreshCw, Download, ArrowLeft, Loader2, Info, Sparkles, HelpCircle } from 'lucide-react';
+import { Gavel, RefreshCw, Download, ArrowLeft, Loader2, Info, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { api, JudgeProfile as IJudgeProfile, HistoricalBJIPoint, CategoryBreakdown } from '../../../lib/api';
 import BJIDeviationChart from '../../../components/BJIDeviationChart';
@@ -13,28 +13,33 @@ export default function JudgePage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [recalculating, setRecalculating] = useState(false);
 
-  async function loadData() {
-    try {
-      const judgeData = await api.getJudge(params.id);
-      const scoreData = await api.getJudgeScores(params.id);
-      setJudge(judgeData);
-      setScores(scoreData);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+    (async () => {
+      try {
+        const judgeData = await api.getJudge(params.id);
+        const scoreData = await api.getJudgeScores(params.id);
+        if (!cancelled) {
+          setJudge(judgeData);
+          setScores(scoreData);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [params.id]);
 
   const handleRecalculate = async () => {
     setRecalculating(true);
     try {
       await api.recalculateJudge(params.id);
-      await loadData();
+      const judgeData = await api.getJudge(params.id);
+      const scoreData = await api.getJudgeScores(params.id);
+      setJudge(judgeData);
+      setScores(scoreData);
     } catch (err) {
       console.error(err);
     } finally {

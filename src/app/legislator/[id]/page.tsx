@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, RefreshCw, Download, ArrowLeft, Loader2, Info, Sparkles, Star, CheckCircle, BarChart2 } from 'lucide-react';
+import { BookOpen, RefreshCw, Download, ArrowLeft, Loader2, Info, Star, CheckCircle, BarChart2 } from 'lucide-react';
 import Link from 'next/link';
 import { api, LegislatorProfile as ILegislatorProfile } from '../../../lib/api';
 
@@ -11,26 +11,27 @@ export default function LegislatorPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [recalculating, setRecalculating] = useState(false);
 
-  async function loadData() {
-    try {
-      const data = await api.getLegislator(params.id);
-      setLeg(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await api.getLegislator(params.id);
+        if (!cancelled) setLeg(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [params.id]);
 
   const handleRecalculate = async () => {
     setRecalculating(true);
     try {
       await api.recalculateLegislator(params.id);
-      await loadData();
+      const data = await api.getLegislator(params.id);
+      setLeg(data);
     } catch (err) {
       console.error(err);
     } finally {
