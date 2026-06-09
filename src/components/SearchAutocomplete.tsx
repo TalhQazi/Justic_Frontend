@@ -12,6 +12,7 @@ export default function SearchAutocomplete() {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +23,17 @@ export default function SearchAutocomplete() {
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   useEffect(() => {
@@ -70,6 +82,7 @@ export default function SearchAutocomplete() {
     <div ref={dropdownRef} className="relative w-full">
       <div className="relative group">
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => {
@@ -85,13 +98,8 @@ export default function SearchAutocomplete() {
         />
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-hover:text-cyan-400 transition-colors" />
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          {loading ? (
+          {loading && (
             <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
-          ) : (
-            <div className="hidden sm:flex items-center gap-1">
-              <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-400">Ctrl</kbd>
-              <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-400">K</kbd>
-            </div>
           )}
         </div>
       </div>
