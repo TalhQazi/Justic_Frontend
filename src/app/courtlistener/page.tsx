@@ -144,10 +144,14 @@ export default function CourtListenerSearch() {
   const getIcon = (type: string) => {
     switch (type) {
       case 'opinion':
+      case 'o':
         return <Gavel className="w-5 h-5 text-cyan-400" />;
       case 'docket':
+      case 'd':
         return <FileText className="w-5 h-5 text-indigo-400" />;
       case 'audio':
+      case 'oa':
+      case 'a':
         return <Volume2 className="w-5 h-5 text-emerald-400" />;
       default:
         return <BookOpen className="w-5 h-5 text-slate-400" />;
@@ -159,7 +163,7 @@ export default function CourtListenerSearch() {
     if (!type) return 'Document';
     if (type === 'o') return 'Opinion';
     if (type === 'd') return 'Docket';
-    if (type === 'a') return 'Audio';
+    if (type === 'a' || type === 'oa') return 'Oral Argument';
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
@@ -237,7 +241,7 @@ export default function CourtListenerSearch() {
                   { id: '', label: 'All Records', icon: <Search className="w-3.5 h-3.5" /> },
                   { id: 'o', label: 'Opinions', icon: <Gavel className="w-3.5 h-3.5" /> },
                   { id: 'd', label: 'Dockets', icon: <FileText className="w-3.5 h-3.5" /> },
-                  { id: 'a', label: 'Oral Arguments', icon: <Volume2 className="w-3.5 h-3.5" /> },
+                  { id: 'oa', label: 'Oral Arguments', icon: <Volume2 className="w-3.5 h-3.5" /> },
                 ].map((typeOption) => (
                   <button
                     key={typeOption.id}
@@ -384,7 +388,9 @@ export default function CourtListenerSearch() {
                   <div className="flex flex-col gap-4">
                     {searchResults.results.map((item, index) => {
                       const displayTitle = item.caseName || item.caseNameFull || 'Untitled Record';
-                      const resolvedType = item.document_type || (item.absolute_url.includes('/opinion/') ? 'opinion' : item.absolute_url.includes('/audio/') ? 'audio' : 'docket');
+                      const resolvedType = item.document_type || 
+                        (item.absolute_url && item.absolute_url.includes('/opinion/') ? 'opinion' : 
+                         item.absolute_url && item.absolute_url.includes('/audio/') ? 'audio' : 'docket');
                       
                       return (
                         <motion.div
@@ -441,7 +447,7 @@ export default function CourtListenerSearch() {
                             </div>
 
                             {/* Citations Array */}
-                            {item.citation && item.citation.length > 0 && (
+                            {item.citation && Array.isArray(item.citation) && item.citation.length > 0 && (
                               <div className="flex flex-wrap gap-1.5 mt-1">
                                 {item.citation.map((cite, cIdx) => (
                                   <span key={cIdx} className="text-[9px] font-mono px-2 py-0.5 bg-white/5 border border-white/10 rounded text-slate-400">
@@ -461,17 +467,19 @@ export default function CourtListenerSearch() {
                           </div>
 
                           {/* Footer Action */}
-                          <div className="flex justify-end pt-2">
-                            <a
-                              href={`https://www.courtlistener.com${item.absolute_url}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider"
-                            >
-                              <span>Open on CourtListener</span>
-                              <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
-                          </div>
+                          {item.absolute_url && (
+                            <div className="flex justify-end pt-2">
+                              <a
+                                href={item.absolute_url.startsWith('http') ? item.absolute_url : `https://www.courtlistener.com${item.absolute_url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider"
+                              >
+                                <span>Open on CourtListener</span>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                          )}
 
                         </motion.div>
                       );
